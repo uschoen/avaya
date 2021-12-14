@@ -1,0 +1,51 @@
+{
+"cms":{
+	"version":"r18.json"},
+"data":{ 
+	"sourceFilePath":"data/",
+	"archiveFilePath":"archive/",
+	"archiveDay":"30"
+	},
+"database":{
+                    "database": "unkown", 
+                    "host": "127.0.0.1", 
+                    "password": "password", 
+                    "port": 3306, 
+                    "user": "unkown",
+                    "raise_on_warnings": true
+            },
+"logging":{
+        "disable_existing_loggers": false,
+        "formatters": {
+            "simple": {
+                "format": "%(asctime)s - %(name)30s - %(lineno)d - %(levelname)s - %(message)s"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "simple",
+                "level": "DEBUG",
+                "stream": "ext://sys.stdout"
+            },
+            "warning_handler": {
+                "backupCount": 5,
+                "class": "logging.handlers.RotatingFileHandler",
+                "encoding": "utf8",
+                "filename": "/mnt/nas01/git/githubClone/avaya/Avaya_ECHI_import/log/warning.log",
+                "formatter": "simple",
+                "level": "DEBUG",
+                "maxBytes": 1200000,
+                "mode": "a"
+            }
+        },
+        "root": {
+            "handlers": [
+                "warning_handler",
+                "console"
+            ],
+            "level": "DEBUG"
+        },
+        "version": 1
+    }
+}
