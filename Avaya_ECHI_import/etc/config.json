@@ -10,11 +10,11 @@
 "db":{
 		"table":"echi",
 		"server":{  
-			"database": "unkown", 
-            "host": "127.0.0.1", 
-            "password": "password", 
-            "port": 3306, 
-            "user": "unkown",
+			"database": "echi_db", 
+            "host": "10.90.12.100", 
+            "password": "iI7(knFFwu", 
+            "port": 3307, 
+            "user": "echi_db",
             "raise_on_warnings": true
            }
             },

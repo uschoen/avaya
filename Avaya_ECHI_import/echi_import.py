@@ -23,6 +23,8 @@ import sys
 import hashlib
 from echi_helper import defaultEXC
 import csv
+import shutil
+
 
 
 
@@ -62,6 +64,13 @@ def main():
         LOG.info("loaad echi file %s"%(echiFormatFile))
         echiCFG=loadJSON(echiFormatFile)
         
+        #    create db connection
+        database=dbConnect(cfgFile['db']['server'])
+        
+        # check if tabel exists
+        if not (checkTableExists(database,cfgFile["db"]["table"])):
+            createNewTable(database,cfgFile["db"]["table"],echiCFG)
+        
         #    search ech data file
         echiDataFiles="%s"%(cfgFile['data']['sourceFilePath'])
         LOG.info("search in %s for new echi files"%(echiDataFiles))
@@ -77,30 +86,50 @@ def main():
             fileData= open(echiPathFile, "r")
             for dataLine in fileData:
                 echiData=dataLine.split(cfgFile['data']['separator'])
+                
+                #    build md5Hash
                 md5Hash= hashlib.md5(dataLine.encode()).hexdigest()
                 
-                database=dbConnect(cfgFile['db']['server'])
-                # prepare vars for new run
+                #     prepare vars for new run
                 secound=False
                 tableString=""
                 valueString=""
-                # build sql string
+                
+                #     build sql string
                 for dataRAW in echiCFG:
                     dataRow=int(dataRAW)              
                     # if secound entry use ","
                     if secound:
                         tableString+=","
                         valueString+=","
-                        
                     secound=True
-                    tableString+=("`%s`"%(echiCFG[dataRAW]))
-                    valueString+=("'%s'"%(echiData[dataRow]))
+                    
+                    if echiCFG[dataRAW]['source']=="cust":
+                        # custommer fields
+                        tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
+                        valueString+=("'%s'"%(md5Hash))
+                    else:
+                        # data fields
+                        tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
+                        valueString+=("'%s'"%(echiData[dataRow]))
                 
-                tableString+=(",`md5`")
-                valueString+=(",'%s'"%(md5Hash))
                 sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
                 LOG.debug("build sql string: %s"%(sql))
+                sqlExecute(database, sql)
+            #    close file
+            fileData.close()
+            
+            #    copy file to archive
+            toFile="%s%s"%(cfgFile['data']['archiveFilePath'],echiFile)
+            LOG.debug("copy file %s to %s"%(echiPathFile,toFile))
+            shutil.move(echiPathFile,toFile)
+        
+        #    close database
+        dbClose(database)
+        
+        #    end
         LOG.info("echi import finish")
+        
     except (defaultEXC) as e:
         LOG.critical("%s"%(e),exc_info=True)
     except: 
@@ -178,6 +207,72 @@ def loadJSON(fileNameABS=None):
             raise defaultEXC("error in json file: %s "%(os.path.normpath(fileNameABS)))
         except:
             raise defaultEXC("unkown error to read json file %s"%(os.path.normpath(fileNameABS)))
+
+def checkTableExists(dbcon, tablename):
+    dbcur = dbcon.cursor()
+    dbcur.execute("""
+        SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_name = '{0}'
+        """.format(tablename.replace('\'', '\'\'')))
+    if dbcur.fetchone()[0] == 1:
+        return True
+    return False
+
+def sqlExecute(dbcon,sql):
+        """
+        excecute a sql statment
+         
+        @var: sql , a well form sql statment.
         
+        exception: defaultEXC 
+         
+        """
+        try:
+            LOG.debug("sqlExecute: %s"%(sql))
+            
+            cursor  = dbcon.cursor()
+            cursor.execute(sql)
+            dbcon.commit()  
+        except (mysql.connector.Error) as e:
+            raise defaultEXC("mysql error %s"%(e))
+        except :
+            raise defaultEXC("unkown error sql:%s"%(sql),True)  
+
+def createNewTable(dbcon,table,echiFields):
+    '''
+    --
+    -- Tabellenstruktur für Tabelle `echi_daten`
+    --
+    
+    CREATE TABLE `echi_daten` (
+      `feld1` int(11) NOT NULL,
+      `feld2` int(11) NOT NULL,
+      `seg_start` int(11) NOT NULL,
+      `md5` varchar(25) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+    '''
+    try:
+        LOG.info("create new table %s"%(table))
+        
+        #    set vars to default
+        sql="CREATE TABLE `%s` ("%(table)
+        secound=False
+        
+        for fieldNumber in echiFields:
+            if secound:
+                sql+=","
+            secound=True
+            sql+="`%s` %s(%s)"%(echiFields[fieldNumber]['name'],echiFields[fieldNumber]['type'],echiFields[fieldNumber]['length'])
+        sql+=") ENGINE=InnoDB DEFAULT CHARSET=utf8;"    
+        LOG.debug("sql: %s"%(sql))
+        sqlExecute(dbcon, sql)
+    except (defaultEXC) as e:
+        raise e
+    except:
+        raise defaultEXC("unkown error in createNewTable",True)
+
+
 if __name__ == '__main__':
     main()
