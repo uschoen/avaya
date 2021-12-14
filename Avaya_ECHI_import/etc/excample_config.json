@@ -2,8 +2,8 @@
 "cms":{
 	"version":"r18.json"},
 "data":{ 
-	"sourceFilePath":"\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\data\\",		
-	"archiveFilePath":"\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\archive\\",
+	"sourceFilePath":"absolute path with \ at the end(escape\\)",		
+	"archiveFilePath":"absolute path with \\archive\\ at the end (escape\\)",
 	"archiveDay":"30",
 	"separator":","
 	},
@@ -36,7 +36,7 @@
                 "backupCount": 5,
                 "class": "logging.handlers.RotatingFileHandler",
                 "encoding": "utf8",
-                "filename": "\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\log\\warning.log",
+                "filename": "absolute path (escape\\)warning.log",
                 "formatter": "simple",
                 "level": "DEBUG",
                 "maxBytes": 1200000,
