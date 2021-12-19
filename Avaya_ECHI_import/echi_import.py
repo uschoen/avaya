@@ -21,19 +21,14 @@ import os
 import json
 import sys
 import hashlib
-from echi_helper import defaultEXC, LOG
+from echi_helper import defaultEXC
 import shutil
 import zipfile
 import datetime
-from _ast import Try
-from idlelib.idle_test.test_colorizer import source
-
-
-
 
 
 #    constants
-__version__='0.9'
+__version__='1.0'
 __author__ = 'ullrich schoen'
 
 #    PATH: the absolute path of the script
@@ -47,7 +42,7 @@ CONFIG_FILE="%s%s"%(PATH,"etc/config.json")
 
 #    Logging
 LOG=logging.getLogger(__name__)
-LOG.warning("start up echi import , version %s, path:%s , rootPath: %s , config:%s"%(__version__,PATH,ROOTPATH,CONFIG_FILE))
+LOG.info("start up echi import , version %s, path:%s , rootPath: %s , config:%s"%(__version__,PATH,ROOTPATH,CONFIG_FILE))
 
 
 def main():       
@@ -68,7 +63,6 @@ def main():
         echiCFG=loadJSON(echiFormatFile)
         
         '''
-        --------------------------------------------------------------------------------------------
             archive old echi files
         '''
         (yearA,monthA,dayA)=cfgFile['data']['lastarchive'].split(",")
@@ -92,7 +86,6 @@ def main():
             writeJSON(CONFIG_FILE, cfgFile)
               
         '''
-        ---------------------------------------------------------------------------------------------
             search ech data file
         '''
         echiDataFiles="%s"%(cfgFile['data']['sourceFilePath'])
@@ -166,10 +159,9 @@ def main():
                 shutil.move(echiPathFile,toFile)   
             
             '''
-            ---------------------------------------------------------------------------------------------
-            clear up database
+                clear up database
             
-            if more then max entry in [db][maxentry] copy old db to tableName_backup
+                if more then max entry in [db][maxentry] copy old db to tableName_backup
             '''
             
             sql="SELECT COUNT(*) FROM `%s`"%(cfgFile['db']['table'])
@@ -185,6 +177,7 @@ def main():
                 sql="RENAME TABLE `%s` TO `echi_db`.`%s`;"%(cfgFile['db']['table'],echiArchive)
                 sqlExecute(database, sql) 
                 createNewTable(database,cfgFile["db"]["table"],echiCFG)
+            
             #    close database
             dbClose(database)
             
@@ -200,6 +193,9 @@ def checkOldArchiveFiles(archivePath,archiveToStore):
     '''
         check the archivePath how many files, and delete if more
         then archiveToStore
+        
+        @var: archivePath: absolute path (dir) to zip archive files
+        @var: archiveToStore: how many files to be hold
     '''
     try:
         while  deleteOldArchive(archivePath,archiveToStore):
@@ -210,6 +206,12 @@ def checkOldArchiveFiles(archivePath,archiveToStore):
 def deleteOldArchive(archivePath,archiveToStore):
     '''
         delete old zip file in archive
+        
+        @var: archivePath: absolute path (dir) to zip archive files
+        @var: archiveToStore: how many files to be hold
+        
+        return: true found file to delete / false no files to delete
+        
     '''
     list_of_files = os.listdir(archivePath)
     full_path = [archivePath+"\{0}".format(x) for x in list_of_files]
@@ -223,6 +225,8 @@ def deleteOldArchive(archivePath,archiveToStore):
 def delteFiles(sourcePath):
     '''
         delete all files in sourcePath
+        
+        @var: sourcePath: absolute path to sourcePath
     
     '''
     try:
@@ -238,10 +242,10 @@ def delteFiles(sourcePath):
     
 def zipFiles(sourcePath,zipPath):
     '''
-        zip alle files in sourcePath to a archive
+        zip all files in sourcePath to a archive
         
-        sourcePath=path for files to zip
-        zipPath= file name of archive file (absolute Path)
+        @var: sourcePath=path for files to zip (absolute Path)
+        @var: zipPath= file name of archive file (absolute Path)
         
     '''
     try:
@@ -264,8 +268,11 @@ def zipFiles(sourcePath,zipPath):
         
 def getFiles(path):
     '''
-    
-    get only files in a directory back
+        get only files in a directory back, no directorys
+        
+        @var: path: absolute path to dir
+        
+        return: a list of alle files
     '''
     try:
         files=[]
@@ -278,17 +285,19 @@ def getFiles(path):
                    
 def dbConnect(cfg={}):
         '''
-        build a new database connection
-        
-        cfg={
-            'host':'127.0.0.1',
-            'database':'databaseName',
-            'user':'username'
-            'password':'password'
-            'port':3306
-            }
+            build a new database connection
             
-        exception: defaultEXC
+        @var: cfg={
+                'host':'127.0.0.1',
+                'database':'databaseName',
+                'user':'username'
+                'password':'password'
+                'port':3306
+                }
+                
+            return: dabase connection object
+            exception: defaultEXC
+            
         '''
         LOG.info("try connect to host:%s:%s with user:%s table:%s"%(cfg['host'],cfg['port'],cfg['user'],cfg['database']))
         try:
@@ -314,6 +323,8 @@ def dbClose(dbConnection):
         
         catch all errors and exception with no error or LOG
         
+        @var: dbconnection, a databse object
+        
         return: none
         
         exception: none
@@ -330,8 +341,8 @@ def writeJSON(fileNameABS=None,jsonData={}):
         '''
         write a file with json data
         
-        fileNameABS: absolute filename to write
-        fileData= data to write
+        @var: fileNameABS: absolute filename to write
+        @var: fileData= data to write
         
         Exception: defaultEXC
         '''
@@ -353,7 +364,7 @@ def loadJSON(fileNameABS=None):
         '''
         load a file with json data
         
-        fileNameABS: absolute filename to load
+        @var: fileNameABS: absolute filename to load
         
         return: Dict 
         
@@ -373,16 +384,27 @@ def loadJSON(fileNameABS=None):
             raise defaultEXC("unkown error to read json file %s"%(os.path.normpath(fileNameABS)))
 
 def checkTableExists(dbcon, tablename):
-    dbcur = dbcon.cursor()
-    dbcur.execute("""
-        SELECT COUNT(*)
-        FROM information_schema.tables
-        WHERE table_name = '{0}'
-        """.format(tablename.replace('\'', '\'\'')))
-    if dbcur.fetchone()[0] == 1:
-        return True
-    return False
-
+    '''
+        check if database table exits
+        
+        @var dbcon: databse object
+        @var tablename: Tabel to check
+        
+        return: true/if tabel exits , false/ not exits
+    '''
+    try:    
+        dbcur = dbcon.cursor()
+        dbcur.execute("""
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_name = '{0}'
+            """.format(tablename.replace('\'', '\'\'')))
+        if dbcur.fetchone()[0] == 1:
+            return True
+        return False
+    except:
+        raise defaultEXC("unkown error to checkTableExits %s"%(tablename))
+    
 def sqlExecute(dbcon,sql):
         """
         excecute a sql statment
@@ -409,6 +431,8 @@ def sqlSelect(dbcon,sql):
          
         @var: sql , a well form sql statment.
         
+        return: sql result
+        
         exception: defaultEXC 
          
         """
@@ -426,17 +450,18 @@ def sqlSelect(dbcon,sql):
 
 def createNewTable(dbcon,table,echiFields):
     '''
-    --
-    -- Tabellenstruktur für Tabelle `echi_daten`
-    --
+        add a echi table
     
-    CREATE TABLE `echi_daten` (
-      `feld1` int(11) NOT NULL,
-      `feld2` int(11) NOT NULL,
-      `seg_start` int(11) NOT NULL,
-      `md5` varchar(25) NOT NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
+        @var: dbcon, a databse obejct
+        @var: table, tablename
+        @var: echiFields  "0": {
+                                 "source":"file",
+                                 "name":"feld1",
+                                 "type":"int",
+                                 "length":"10"
+                                 },
+                          "...": {...}
+                          
     '''
     try:
         LOG.info("create new table %s"%(table))
