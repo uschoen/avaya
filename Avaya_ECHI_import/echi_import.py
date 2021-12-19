@@ -21,9 +21,12 @@ import os
 import json
 import sys
 import hashlib
-from echi_helper import defaultEXC
-import csv
+from echi_helper import defaultEXC, LOG
 import shutil
+import zipfile
+import datetime
+from _ast import Try
+from idlelib.idle_test.test_colorizer import source
 
 
 
@@ -64,69 +67,127 @@ def main():
         LOG.info("loaad echi file %s"%(echiFormatFile))
         echiCFG=loadJSON(echiFormatFile)
         
-        #    create db connection
-        database=dbConnect(cfgFile['db']['server'])
+        '''
+        --------------------------------------------------------------------------------------------
+            archive old echi files
+        '''
+        (yearA,monthA,dayA)=cfgFile['data']['lastarchive'].split(",")
         
-        # check if tabel exists
-        if not (checkTableExists(database,cfgFile["db"]["table"])):
-            createNewTable(database,cfgFile["db"]["table"],echiCFG)
+        lastArchive=datetime.datetime.now()-datetime.datetime(int(yearA),int(monthA),int(dayA))
         
-        #    search ech data file
+        if int(lastArchive.days)>=int(cfgFile['data']['archiveInterval']):
+            sourcePath="%s"%(cfgFile['data']['archiveFilePath'])
+            zipPath='%szip\echi_%s_%s_%s.zip'%(sourcePath,yearA,monthA,dayA)
+            
+            #    zip old echi files in archive    
+            zipFiles(sourcePath, zipPath)
+            
+            #    delte old echi files in archive
+            delteFiles(sourcePath)
+            
+            #     check to delete old acrive zip files
+            checkOldArchiveFiles("%s\zip"%(sourcePath),cfgFile['data']['holdArchiveFiles'])
+            
+            cfgFile['data']['lastarchive']=datetime.datetime.now().strftime(format = "%Y,%m,%d")    
+            writeJSON(CONFIG_FILE, cfgFile)
+              
+        '''
+        ---------------------------------------------------------------------------------------------
+            search ech data file
+        '''
         echiDataFiles="%s"%(cfgFile['data']['sourceFilePath'])
         LOG.info("search in %s for new echi files"%(echiDataFiles))
         echiFiles = os.listdir(echiDataFiles)
         LOG.info("found %s files"%(len(echiFiles)))
         
-        #    read each file in echiFiles
-        for echiFile in echiFiles:
-            echiPathFile="%s%s"%(echiDataFiles,echiFile)
-            LOG.debug("import %s"%(echiPathFile))
+        #    found files in dir
+        if (len(echiFiles)>0):
             
-            #    read each line in file
-            fileData= open(echiPathFile, "r")
-            for dataLine in fileData:
-                echiData=dataLine.split(cfgFile['data']['separator'])
+            #    create db connection
+            database=dbConnect(cfgFile['db']['server'])
+            
+            # check if tabel exists
+            if not (checkTableExists(database,cfgFile["db"]["table"])):
+                createNewTable(database,cfgFile["db"]["table"],echiCFG)
                 
-                #    build md5Hash
-                md5Hash= hashlib.md5(dataLine.encode()).hexdigest()
+            #    read each file in echiFiles
+            for echiFile in echiFiles:
                 
-                #     prepare vars for new run
-                secound=False
-                tableString=""
-                valueString=""
-                
-                #     build sql string
-                for dataRAW in echiCFG:
-                    dataRow=int(dataRAW)              
-                    # if secound entry use ","
-                    if secound:
-                        tableString+=","
-                        valueString+=","
-                    secound=True
+                try:
+                    echiPathFile="%s%s"%(echiDataFiles,echiFile)
+                    LOG.debug("import %s"%(echiPathFile))
                     
-                    if echiCFG[dataRAW]['source']=="cust":
-                        # custommer fields
-                        tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
-                        valueString+=("'%s'"%(md5Hash))
-                    else:
-                        # data fields
-                        tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
-                        valueString+=("'%s'"%(echiData[dataRow]))
+                    #    read each line in file
+                    fileData= open(echiPathFile, "r")
+                    for dataLine in fileData:
+                        echiData=dataLine.split(cfgFile['data']['separator'])
+                        
+                        #    build md5Hash
+                        md5Hash= hashlib.md5(dataLine.encode()).hexdigest()
+                        
+                        #     prepare vars for new run
+                        secound=False
+                        tableString=""
+                        valueString=""
+                        
+                        #     build sql string
+                        for dataRAW in echiCFG:
+                            dataRow=int(dataRAW)              
+                            # if secound entry use ","
+                            if secound:
+                                tableString+=","
+                                valueString+=","
+                            secound=True
+                            
+                            if echiCFG[dataRAW]['source']=="cust":
+                                # custommer fields
+                                tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
+                                valueString+=("'%s'"%(md5Hash))
+                            else:
+                                # data fields
+                                tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
+                                valueString+=("'%s'"%(echiData[dataRow]))
+                        
+                        sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
+                        LOG.debug("build sql string: %s"%(sql))
+                        sqlExecute(database, sql)
+                    
+                    
+                    fileData.close() 
+                except:
+                    LOG.critical("some error in %s"%(echiFile),exc_info=True)
                 
-                sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
-                LOG.debug("build sql string: %s"%(sql))
-                sqlExecute(database, sql)
-            #    close file
-            fileData.close()
+                #    close file
+                    fileData.close() 
+                    
+                #    copy file to archive
+                toFile="%s%s"%(cfgFile['data']['archiveFilePath'],echiFile)
+                LOG.debug("copy file %s to %s"%(echiPathFile,toFile))
+                shutil.move(echiPathFile,toFile)   
             
-            #    copy file to archive
-            toFile="%s%s"%(cfgFile['data']['archiveFilePath'],echiFile)
-            LOG.debug("copy file %s to %s"%(echiPathFile,toFile))
-            shutil.move(echiPathFile,toFile)
-        
-        #    close database
-        dbClose(database)
-        
+            '''
+            ---------------------------------------------------------------------------------------------
+            clear up database
+            
+            if more then max entry in [db][maxentry] copy old db to tableName_backup
+            '''
+            
+            sql="SELECT COUNT(*) FROM `%s`"%(cfgFile['db']['table'])
+            numberOfEntrys=sqlSelect(database,sql)[0][0]
+            if numberOfEntrys>cfgFile['db']['maxEntry']:
+                LOG.info("found %s entry in %s"%(numberOfEntrys,cfgFile['db']['table']))
+                
+                #    delete old archive database
+                echiArchive="%s_oldEntry"%(cfgFile['db']['table'])
+                if checkTableExists(database, echiArchive):
+                    sql="DROP TABLE `%s`"%(echiArchive)
+                    sqlExecute(database,sql)
+                sql="RENAME TABLE `%s` TO `echi_db`.`%s`;"%(cfgFile['db']['table'],echiArchive)
+                sqlExecute(database, sql) 
+                createNewTable(database,cfgFile["db"]["table"],echiCFG)
+            #    close database
+            dbClose(database)
+            
         #    end
         LOG.info("echi import finish")
         
@@ -134,7 +195,87 @@ def main():
         LOG.critical("%s"%(e),exc_info=True)
     except: 
         LOG.critical("unkown error ",exc_info=True)
+
+def checkOldArchiveFiles(archivePath,archiveToStore):
+    '''
+        check the archivePath how many files, and delete if more
+        then archiveToStore
+    '''
+    try:
+        while  deleteOldArchive(archivePath,archiveToStore):
+            pass
+    except:
+        raise defaultEXC("unkown error in checkOldArchiveFiles",True)
+
+def deleteOldArchive(archivePath,archiveToStore):
+    '''
+        delete old zip file in archive
+    '''
+    list_of_files = os.listdir(archivePath)
+    full_path = [archivePath+"\{0}".format(x) for x in list_of_files]
+    if len(list_of_files) > int(archiveToStore):
+        oldest_file = min(full_path, key=os.path.getctime)
+        os.remove(oldest_file)
+        LOG.info("delete old archive file %s"%(oldest_file))
+        return True
+    return False
+        
+def delteFiles(sourcePath):
+    '''
+        delete all files in sourcePath
     
+    '''
+    try:
+        LOG.info("delete all files in  %s"%(sourcePath))
+        filesToDelete=getFiles(sourcePath)
+        
+        for fileName in filesToDelete:
+            absFileName="%s%s"%(sourcePath,fileName)
+            LOG.debug("delete %s"%(absFileName))
+            os.remove(absFileName)
+    except:
+        raise defaultEXC("unkown error in deleteFiles %s"%(sourcePath),True)
+    
+def zipFiles(sourcePath,zipPath):
+    '''
+        zip alle files in sourcePath to a archive
+        
+        sourcePath=path for files to zip
+        zipPath= file name of archive file (absolute Path)
+        
+    '''
+    try:
+        filesToArchive=getFiles(sourcePath)
+        if len(filesToArchive)==0:
+            return
+        LOG.info("archive echi files in dir %s to file %s"%(sourcePath,zipPath))
+        
+        #    open new zip file
+        echiZipFile = zipfile.ZipFile(zipPath, mode='w')
+        
+        for file in filesToArchive:
+            
+            fullFilePath="%s%s"%(sourcePath,file)
+            echiZipFile.write(fullFilePath)
+        echiZipFile.close()
+    except:
+        echiZipFile.close()
+        raise defaultEXC("unkown error in zipFiles",True)
+        
+def getFiles(path):
+    '''
+    
+    get only files in a directory back
+    '''
+    try:
+        files=[]
+        for file in os.listdir(path):
+            if os.path.isfile(os.path.join(path, file)):
+                files.append(file)
+        return files
+    except: 
+        raise defaultEXC("unkoun error in getfiles fpr path %s"%(path),True)
+                   
 def dbConnect(cfg={}):
         '''
         build a new database connection
@@ -185,6 +326,29 @@ def dbClose(dbConnection):
         except:
             pass
 
+def writeJSON(fileNameABS=None,jsonData={}):
+        '''
+        write a file with json data
+        
+        fileNameABS: absolute filename to write
+        fileData= data to write
+        
+        Exception: defaultEXC
+        '''
+        if fileNameABS==None:
+            raise defaultEXC("no fileNameABS given")
+        try:
+            LOG.debug("write json file to %s"%(fileNameABS))
+            with open(os.path.normpath(fileNameABS),'w') as outfile:
+                json.dump(jsonData, outfile,sort_keys=True, indent=4)
+                outfile.close()
+        except IOError:
+            raise defaultEXC("can not find file: %s "%(os.path.normpath(fileNameABS)))
+        except ValueError:
+            raise defaultEXC("error in json find file: %s "%(os.path.normpath(fileNameABS)))
+        except:
+            raise defaultEXC("unkown error in json file to write: %s"%(os.path.normpath(fileNameABS)))
+                       
 def loadJSON(fileNameABS=None):
         '''
         load a file with json data
@@ -234,6 +398,27 @@ def sqlExecute(dbcon,sql):
             cursor  = dbcon.cursor()
             cursor.execute(sql)
             dbcon.commit()  
+        except (mysql.connector.Error) as e:
+            raise defaultEXC("mysql error %s"%(e))
+        except :
+            raise defaultEXC("unkown error sql:%s"%(sql),True) 
+        
+def sqlSelect(dbcon,sql):
+        """
+        excecute a sql statment
+         
+        @var: sql , a well form sql statment.
+        
+        exception: defaultEXC 
+         
+        """
+        try:
+            LOG.debug("sqlExecute: %s"%(sql))
+            
+            cursor  = dbcon.cursor()
+            cursor.execute(sql)
+            result=cursor.fetchall()
+            return result
         except (mysql.connector.Error) as e:
             raise defaultEXC("mysql error %s"%(e))
         except :

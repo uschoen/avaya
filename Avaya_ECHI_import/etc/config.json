@@ -1,28 +1,32 @@
 {
-"cms":{
-	"version":"r18.json"},
-"data":{ 
-	"sourceFilePath":"\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\data\\",		
-	"archiveFilePath":"\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\archive\\",
-	"archiveDay":"30",
-	"separator":","
-	},
-"db":{
-		"table":"echi",
-		"server":{  
-			"database": "echi_db", 
-            "host": "10.90.12.100", 
-            "password": "iI7(knFFwu", 
-            "port": 3307, 
-            "user": "echi_db",
-            "raise_on_warnings": true
-           }
-            },
-"logging":{
+    "cms": {
+        "version": "r18.json"
+    },
+    "data": {
+        "archiveFilePath": "\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\archive\\",
+        "archiveInterval": "1",
+        "holdArchiveFiles": "2",
+        "lastarchive": "2021,12,19",
+        "separator": ",",
+        "sourceFilePath": "\\\\NAS01\\git\\githubClone\\avaya\\Avaya_ECHI_import\\data\\"
+    },
+    "db": {
+        "maxEntry": 100,
+        "server": {
+            "database": "echi_db",
+            "host": "10.90.12.100",
+            "password": "iI7(knFFwu",
+            "port": 3307,
+            "raise_on_warnings": true,
+            "user": "echi_db"
+        },
+        "table": "echi"
+    },
+    "logging": {
         "disable_existing_loggers": false,
         "formatters": {
             "simple": {
-                "format": "%(asctime)s - %(name)30s - %(lineno)d - %(levelname)s - %(message)s"
+                "format": "%(asctime)s - %(name)10s - %(lineno)d - %(levelname)s - %(message)s"
             }
         },
         "handlers": {
@@ -51,5 +55,6 @@
             "level": "DEBUG"
         },
         "version": 1
-    }
+    },
+    "sys": {}
 }
