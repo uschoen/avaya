@@ -1,0 +1,567 @@
+[ 
+{
+ 	"source":"file",
+ 	"name":"CALLID",
+ 	"type":"int",
+ 	"length":"10"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"ACWTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"ANSHOLDTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"CONSULTTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"DISPTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"DURATION",
+ 	"type":"int",
+ 	"length":"4"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"SEGSTART",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"SEGSTART_UTC",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"SEGSTOP",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"SEGSTOP_UTC",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"TALKTIME",
+ 	"type":"int",
+ 	"length":"5"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"NETINTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"ORIGHOLDTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"QUEUETIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"RINGTIME",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"TENANT",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"ECD_NUM",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"DISPIVECTOR",
+ 	"type":"int",
+ 	"length":"16"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"DISPSPLIT",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"FIRSTVECTOR",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"SPLIT1",
+ 	"type":"int",
+ 	"length":"6"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"SPLIT2",
+ 	"type":"int",
+ 	"length":"6"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"SPLIT3",
+ 	"type":"int",
+ 	"length":"6"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"TKGRP",
+ 	"type":"int",
+ 	"length":"5"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"EQ_LOCID",
+ 	"type":"int",
+ 	"length":"2"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"ORIG_LOCID",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"ANS_LOCID",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"OBS_LOCID",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"UUI_LEN",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"ASSIST",
+ 	"type":"int",
+ 	"length":"1"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"AUDIO",
+ 	"type":"int",
+ 	"length":"1"
+ 	}, 	
+ {
+ 	"source":"file",
+ 	"name":"CONFERENCE",
+ 	"type":"int",
+ 	"length":"1"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"DA_QUEUED",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"HOLDABN",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"MALICIOUS",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"OBSERVINGCALL",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"TRANSFERRED",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"AGT_RELEASED",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"ACD",
+ 	"type":"int",
+ 	"length":"8"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"CALL_DISP",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"DISPPRIORITY",
+ 	"type":"int",
+ 	"length":"1"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"HELD",
+ 	"type":"int",
+ 	"length":"2"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"SEGMENT",
+ 	"type":"int",
+ 	"length":"3"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"ANSREASON",
+ 	"type":"int",
+ 	"length":"1"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"ORIGREASON",
+ 	"type":"int",
+ 	"length":"3"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"DISPSKLEVEL",
+ 	"type":"int",
+ 	"length":"4"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"EVENT1",
+ 	"type":"int",
+ 	"length":"1"
+ 	},
+ {
+ 	"source":"file",
+ 	"name":"EVENT2",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT3",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT4",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT5",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT6",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT7",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT8",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+ {
+ 	"source":"file",
+ 	"name":"EVENT9",
+ 	"type":"int",
+ 	"length":"1"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"ECD_CONTROL",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"ECD_INFO",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"UCID",
+ 	"type":"varchar",
+ 	"length":"21"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"DISPVDN",
+ 	"type":"varchar",
+ 	"length":"8"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"EQLOC",
+ 	"type":"varchar",
+ 	"length":"10"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"FIRSTVDN",
+ 	"type":"varchar",
+ 	"length":"8"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"ORIGLOGIN",
+ 	"type":"int",
+ 	"length":"4"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"ANSLOGIN",
+ 	"type":"int",
+ 	"length":"4"
+ 	}, 
+{
+ 	"source":"file",
+ 	"name":"LASTOBSERVER",
+ 	"type":"varchar",
+ 	"length":"10"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"DIALED_NUM",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 
+{
+ 	"source":"file",
+ 	"name":"CALLING_PTY",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},	
+{
+ 	"source":"file",
+ 	"name":"LASTDIGITS",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	}, 
+{
+ 	"source":"file",
+ 	"name":"LASTCWC",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CALLING_II",
+ 	"type":"varchar",
+ 	"length":"3"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CWC1",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CWC2",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CWC3",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CWC4",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"CWC5",
+ 	"type":"varchar",
+ 	"length":"17"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN2",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN3",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN4",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN5",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN6",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN7",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN8",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"VDN9",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 
+{
+ 	"source":"file",
+ 	"name":"ASAI_UUI",
+ 	"type":"varchar",
+ 	"length":"97"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"INTERRUPTDEL",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"AGENTSURPLUS",
+ 	"type":"int",
+ 	"length":"1"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"AGENTSKILLLEVEL",
+ 	"type":"int",
+ 	"length":"1"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"PREFSKILLLEVEL",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	}, 	
+{
+ 	"source":"file",
+ 	"name":"ICRRESENT",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"ICRPULLREASON",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},   	 
+{
+ 	"source":"file",
+ 	"name":"ORIG_ATTRIB_ID",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"ANS_ATTRIB_ID",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},  	
+{
+ 	"source":"file",
+ 	"name":"OBS_ATTRIB_ID",
+ 	"type":"varchar",
+ 	"length":"21"
+ 	},
+{
+ 	"source":"file",
+ 	"name":"ECD_STR",
+ 	"type":"varchar",
+ 	"length":"25"
+ 	},
+ 	
+{
+	"source":"cust",
+ 	"name":"md5",
+ 	"type":"varchar",
+ 	"length":"32"
+ 	}
+]
