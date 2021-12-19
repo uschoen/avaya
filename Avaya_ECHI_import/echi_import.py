@@ -22,6 +22,7 @@ import json
 import sys
 import hashlib
 from echi_helper import defaultEXC
+from mysql_db import mysql_db
 import shutil
 import zipfile
 import datetime
@@ -97,10 +98,11 @@ def main():
         if (len(echiFiles)>0):
             
             #    create db connection
-            database=dbConnect(cfgFile['db']['server'])
+            database=mysql_db(cfgFile['db']['server'])
+            
             
             # check if tabel exists
-            if not (checkTableExists(database,cfgFile["db"]["table"])):
+            if not (database.checkTableExists(cfgFile["db"]["table"])):
                 createNewTable(database,cfgFile["db"]["table"],echiCFG)
                 
             #    read each file in echiFiles
@@ -143,7 +145,7 @@ def main():
                         
                         sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
                         LOG.debug("build sql string: %s"%(sql))
-                        sqlExecute(database, sql)
+                        database.sqlExecute(sql)
                     
                     
                     fileData.close() 
@@ -165,21 +167,21 @@ def main():
             '''
             
             sql="SELECT COUNT(*) FROM `%s`"%(cfgFile['db']['table'])
-            numberOfEntrys=sqlSelect(database,sql)[0][0]
+            numberOfEntrys=database.sqlSelect(sql)[0][0]
             if numberOfEntrys>cfgFile['db']['maxEntry']:
                 LOG.info("found %s entry in %s"%(numberOfEntrys,cfgFile['db']['table']))
                 
                 #    delete old archive database
                 echiArchive="%s_oldEntry"%(cfgFile['db']['table'])
-                if checkTableExists(database, echiArchive):
+                if database.checkTableExists(echiArchive):
                     sql="DROP TABLE `%s`"%(echiArchive)
-                    sqlExecute(database,sql)
+                    database.sqlExecute(sql)
                 sql="RENAME TABLE `%s` TO `echi_db`.`%s`;"%(cfgFile['db']['table'],echiArchive)
-                sqlExecute(database, sql) 
+                database.sqlExecute(sql) 
                 createNewTable(database,cfgFile["db"]["table"],echiCFG)
             
             #    close database
-            dbClose(database)
+            database.dbClose()
             
         #    end
         LOG.info("echi import finish")
@@ -283,59 +285,6 @@ def getFiles(path):
     except: 
         raise defaultEXC("unkoun error in getfiles fpr path %s"%(path),True)
                    
-def dbConnect(cfg={}):
-        '''
-            build a new database connection
-            
-        @var: cfg={
-                'host':'127.0.0.1',
-                'database':'databaseName',
-                'user':'username'
-                'password':'password'
-                'port':3306
-                }
-                
-            return: dabase connection object
-            exception: defaultEXC
-            
-        '''
-        LOG.info("try connect to host:%s:%s with user:%s table:%s"%(cfg['host'],cfg['port'],cfg['user'],cfg['database']))
-        try:
-            dbConnection = mysql.connector.connect(**cfg)
-                                                
-            #self.__dbConnection.apilevel = "2.0"
-            #self.__dbConnection.threadsafety = 3
-            #self.__dbConnection.paramstyle = "format" 
-            #self.__dbConnection.autocommit=True
-            LOG.info("mysql connect succecfull")
-            return dbConnection
-        except (mysql.connector.Error) as e:
-            dbClose(dbConnection)  
-            dbConnection=False
-            raise defaultEXC("can't not connect to database: %s"%(e))
-        except:
-            raise defaultEXC("unkown error in modul",True)
-    
-def dbClose(dbConnection):
-        '''
-        
-        close the database connection
-        
-        catch all errors and exception with no error or LOG
-        
-        @var: dbconnection, a databse object
-        
-        return: none
-        
-        exception: none
-        '''
-        try:
-            if dbConnection:
-                LOG.info("close database")
-                dbConnection.close()
-                dbConnection=False
-        except:
-            pass
 
 def writeJSON(fileNameABS=None,jsonData={}):
         '''
@@ -383,71 +332,6 @@ def loadJSON(fileNameABS=None):
         except:
             raise defaultEXC("unkown error to read json file %s"%(os.path.normpath(fileNameABS)))
 
-def checkTableExists(dbcon, tablename):
-    '''
-        check if database table exits
-        
-        @var dbcon: databse object
-        @var tablename: Tabel to check
-        
-        return: true/if tabel exits , false/ not exits
-    '''
-    try:    
-        dbcur = dbcon.cursor()
-        dbcur.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name = '{0}'
-            """.format(tablename.replace('\'', '\'\'')))
-        if dbcur.fetchone()[0] == 1:
-            return True
-        return False
-    except:
-        raise defaultEXC("unkown error to checkTableExits %s"%(tablename))
-    
-def sqlExecute(dbcon,sql):
-        """
-        excecute a sql statment
-         
-        @var: sql , a well form sql statment.
-        
-        exception: defaultEXC 
-         
-        """
-        try:
-            LOG.debug("sqlExecute: %s"%(sql))
-            
-            cursor  = dbcon.cursor()
-            cursor.execute(sql)
-            dbcon.commit()  
-        except (mysql.connector.Error) as e:
-            raise defaultEXC("mysql error %s"%(e))
-        except :
-            raise defaultEXC("unkown error sql:%s"%(sql),True) 
-        
-def sqlSelect(dbcon,sql):
-        """
-        excecute a sql statment
-         
-        @var: sql , a well form sql statment.
-        
-        return: sql result
-        
-        exception: defaultEXC 
-         
-        """
-        try:
-            LOG.debug("sqlExecute: %s"%(sql))
-            
-            cursor  = dbcon.cursor()
-            cursor.execute(sql)
-            result=cursor.fetchall()
-            return result
-        except (mysql.connector.Error) as e:
-            raise defaultEXC("mysql error %s"%(e))
-        except :
-            raise defaultEXC("unkown error sql:%s"%(sql),True)  
-
 def createNewTable(dbcon,table,echiFields):
     '''
         add a echi table
@@ -477,7 +361,7 @@ def createNewTable(dbcon,table,echiFields):
             sql+="`%s` %s(%s)"%(echiFields[fieldNumber]['name'],echiFields[fieldNumber]['type'],echiFields[fieldNumber]['length'])
         sql+=") ENGINE=InnoDB DEFAULT CHARSET=utf8;"    
         LOG.debug("sql: %s"%(sql))
-        sqlExecute(dbcon, sql)
+        dbcon.sqlExecute(sql)
     except (defaultEXC) as e:
         raise e
     except:
