@@ -62,7 +62,6 @@ def main():
         echiFormatFile="%sechi_format/%s"%(PATH,cfgFile["cms"]["version"])
         LOG.info("loaad echi file %s"%(echiFormatFile))
         echiCFG=loadJSON(echiFormatFile)
-        
         '''
             archive old echi files
         '''
@@ -121,27 +120,26 @@ def main():
                         md5Hash= hashlib.md5(dataLine.encode()).hexdigest()
                         
                         #     prepare vars for new run
-                        secound=False
                         tableString=""
                         valueString=""
                         
                         #     build sql string
-                        for dataRAW in echiCFG:
-                            dataRow=int(dataRAW)              
+                        for echiDefinition in echiCFG:
+                            echIFileIndex=int(echiCFG.index(echiDefinition))
+                            
                             # if secound entry use ","
-                            if secound:
+                            if not (tableString==""):
                                 tableString+=","
                                 valueString+=","
-                            secound=True
                             
-                            if echiCFG[dataRAW]['source']=="cust":
+                            if echiDefinition['source']=="cust":
                                 # custommer fields
-                                tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
+                                tableString+=("`%s`"%(echiDefinition['name']))
                                 valueString+=("'%s'"%(md5Hash))
                             else:
                                 # data fields
-                                tableString+=("`%s`"%(echiCFG[dataRAW]['name']))
-                                valueString+=("'%s'"%(echiData[dataRow]))
+                                tableString+=("`%s`"%(echiDefinition['name']))
+                                valueString+=("'%s'"%(echiData[echIFileIndex]))
                         
                         sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
                         LOG.debug("build sql string: %s"%(sql))
@@ -149,12 +147,12 @@ def main():
                     
                     
                     fileData.close() 
+                except (IndexError) as e:
+                    LOG.critical("index error at INDEX: %s and echiImport file %s %s"%(echIFileIndex,cfgFile['cms']['version'],e))
                 except:
                     LOG.critical("some error in %s"%(echiFile),exc_info=True)
-                
-                #    close file
+                finally:
                     fileData.close() 
-                    
                 #    copy file to archive
                 toFile="%s%s"%(cfgFile['data']['archiveFilePath'],echiFile)
                 LOG.debug("copy file %s to %s"%(echiPathFile,toFile))
@@ -338,13 +336,15 @@ def createNewTable(dbcon,table,echiFields):
     
         @var: dbcon, a databse obejct
         @var: table, tablename
-        @var: echiFields  "0": {
+        @var: echiFields  [ 
+                            {
                                  "source":"file",
-                                 "name":"feld1",
+                                 "name":"CALLID",
                                  "type":"int",
                                  "length":"10"
                                  },
-                          "...": {...}
+                            {...},
+                            ]
                           
     '''
     try:
@@ -354,13 +354,15 @@ def createNewTable(dbcon,table,echiFields):
         sql="CREATE TABLE `%s` ("%(table)
         secound=False
         
-        for fieldNumber in echiFields:
+        for echiDefinition in echiFields:
             if secound:
                 sql+=","
             secound=True
-            sql+="`%s` %s(%s)"%(echiFields[fieldNumber]['name'],echiFields[fieldNumber]['type'],echiFields[fieldNumber]['length'])
-        sql+=") ENGINE=InnoDB DEFAULT CHARSET=utf8;"    
+            sql+="`%s` %s(%s)"%(echiDefinition['name'],echiDefinition['type'],echiDefinition['length'])
+        sql+=")  ENGINE=InnoDB DEFAULT CHARSET=utf8;"    
         LOG.debug("sql: %s"%(sql))
+        dbcon.sqlExecute(sql)
+        sql="ALTER TABLE `%s`  ADD UNIQUE KEY `md5` (`md5`);"%(table)
         dbcon.sqlExecute(sql)
     except (defaultEXC) as e:
         raise e
