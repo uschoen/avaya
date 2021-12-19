@@ -94,12 +94,6 @@
  	"name":"TENANT",
  	"type":"int",
  	"length":"4"
- 	}, 	
-{
- 	"source":"file",
- 	"name":"ECD_NUM",
- 	"type":"varchar",
- 	"length":"25"
  	},
 {
  	"source":"file",
@@ -328,19 +322,7 @@
  	"name":"EVENT9",
  	"type":"int",
  	"length":"1"
- 	},	
-{
- 	"source":"file",
- 	"name":"ECD_CONTROL",
- 	"type":"varchar",
- 	"length":"25"
- 	},	
-{
- 	"source":"file",
- 	"name":"ECD_INFO",
- 	"type":"varchar",
- 	"length":"25"
- 	},	
+ 	},		
 {
  	"source":"file",
  	"name":"UCID",
@@ -550,12 +532,6 @@
  	"name":"OBS_ATTRIB_ID",
  	"type":"varchar",
  	"length":"21"
- 	},
-{
- 	"source":"file",
- 	"name":"ECD_STR",
- 	"type":"varchar",
- 	"length":"25"
  	},
  	
 {

@@ -1,0 +1,92 @@
+{ R12-R15 ECH table schema - SAMPLE ONLY - NO guarantee stated or implied }
+grant dba to "root";
+grant resource to "public";
+
+{ TABLE "root".c_ech }
+create table "root".c_ech
+  (
+    callid integer,
+    acwtime integer,
+    ansholdtime integer,
+    consulttime integer,
+    disptime integer,
+    duration integer,
+    segstart date not null,                { date-time }
+    segstop date not null,                { date-time }
+    talktime integer,
+    netintime integer,
+    origholdtime integer,
+    queuetime integer,      { Extended format unique }
+    ringtime integer,          { Extended format unique }
+    dispivector smallint,
+    dispsplit smallint,
+    firstivector smallint,
+    split1 smallint,
+    split2 smallint,
+    split3 smallint,
+    tkgrp smallint,
+    eq_locid smallint,
+    orig_locid smallint,
+    ans_locid smallint,
+    obs_locid smallint,
+    uui_len smallint,      { Extended format unique }
+    assist smallint,
+    audio smallint,
+    conference smallint,
+    da_queued smallint,
+    holdabn smallint,
+    malicious smallint,
+    observingcall smallint,
+    transferred smallint,
+    agt_released smallint,
+    acd smallint not null,
+    disposition smallint,
+    disppriority smallint,
+    held smallint,
+    segment smallint,
+    ansreason smallint,
+    origreason smallint,
+    dispsklevel smallint,
+    event1 smallint,
+    event2 smallint,
+    event3 smallint,
+    event4 smallint,
+    event5 smallint,
+    event6 smallint,
+    event7 smallint,
+    event8 smallint,
+    event9 smallint,
+    ucid char(20);
+    dispvdn char(7),
+    eqloc char(9),
+    firstvdn char(7),
+    origlogin char(9),
+    anslogin char(9),
+    lastobserver char(9),
+    dialed_num char(24),
+    calling_pty char(12),
+    lastdigits char(16),
+    lastcwc char(16),
+    calling_ii char(2),
+    cwc1 char(16),
+    cwc2 char(16),
+    cwc3 char(16),
+    cwc4 char(16),
+    cwc5 char(16),
+    vdn2 char(7),      { Extended format unique }
+    vdn3 char(7),      { Extended format unique }
+    vdn4 char(7),      { Extended format unique }
+    vdn5 char(7),      { Extended format unique }
+    vdn6 char(7),      { Extended format unique }
+    vdn7 char(7),      { Extended format unique }
+    vdn8 char(7),      { Extended format unique }
+    vdn9 char(7),      { Extended format unique }
+    asaiuui char(192)   { Extended format unique }
+  ) in "/cms/cmstables/c_ech";
+revoke all on "root".c_ech from "public";
+create index "root".ech_ind on "root".c_ech (acd,segstart_d,segstart_t);
+grant select on "root".c_ech to "public" as "root";
+grant update on "root".c_ech to "public" as "root";
+grant insert on "root".c_ech to "public" as "root";
+grant delete on "root".c_ech to "public" as "root";
+grant index on "root".c_ech to "public" as "root";

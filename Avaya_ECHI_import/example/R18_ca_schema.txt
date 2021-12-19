@@ -1,0 +1,109 @@
+{ 
+R18 CMS ECH table schema - SAMPLE ONLY - NO guarantee stated or implied
+This schema is NOT the same as CMS's call_rec table schema. The field ordering 
+in this schema does not align with the binary/ASCII ECH file field ordering
+in the R18 ECH manual. The field ordering in CMS's ICH table is slightly different.
+}
+grant dba to "root";
+grant resource to "public";
+
+{ TABLE "root".c_ech }
+create table "root".c_ech
+  (
+    callid integer,
+    acwtime integer,
+    ansholdtime integer,
+    consulttime integer,
+    disptime integer,
+    duration integer,
+    segstart date not null,               { YYYY-MM-DD hh:mm:ss }
+    segstart_utc date not null,
+    segstop date,                         { YYYY-MM-DD hh:mm:ss }
+    segstop_utc date,
+    talktime integer,
+    netintime integer,
+    origholdtime integer,
+    queuetime integer,
+    ringtime integer,
+    orig_attrib_id char(20),              { modified for R18 }
+    ans_attrib_id char(20),               { modified for R18 }
+    obs_attrib_id char(20),               { modified for R18 }
+    dispivector smallint,
+    dispsplit smallint,
+    firstivector smallint,
+    split1 smallint,
+    split2 smallint,
+    split3 smallint,
+    tkgrp smallint,
+    eq_locid smallint,
+    orig_locid smallint,
+    ans_locid smallint,
+    obs_locid smallint,
+    uui_len smallint,
+    assist smallint,
+    audio smallint,
+    conference smallint,
+    da_queued smallint,
+    holdabn smallint,
+    malicious smallint,
+    observingcall smallint,
+    transferred smallint,
+    agt_released smallint,
+    acd smallint not null,
+    disposition smallint,
+    disppriority smallint,
+    held smallint,
+    segment smallint,
+    ansreason smallint,
+    origreason smallint,
+    dispsklevel smallint,
+    event1 smallint,
+    event2 smallint,
+    event3 smallint,
+    event4 smallint,
+    event5 smallint,
+    event6 smallint,
+    event7 smallint,
+    event8 smallint,
+    event9 smallint,
+    ucid char(20);
+    dispvdn char(16),                     { modified for R18 }
+    eqloc char(9),
+    firstvdn char(16),                    { modified for R18 }
+    origlogin char(16),                   { modified for R18 }
+    anslogin char(16),                    { modified for R18 }
+    lastobserver char(16),                { modified for R18 }
+    dialed_num char(24),
+    calling_pty char(24),
+    lastdigits char(16),
+    lastcwc char(16),
+    calling_ii char(2),
+    cwc1 char(16),
+    cwc2 char(16),
+    cwc3 char(16),
+    cwc4 char(16),
+    cwc5 char(16),
+    vdn2 char(16),                        { modified for R18 }
+    vdn3 char(16),                        { modified for R18 }
+    vdn4 char(16),                        { modified for R18 }
+    vdn5 char(16),                        { modified for R18 }
+    vdn6 char(16),                        { modified for R18 }
+    vdn7 char(16),                        { modified for R18 }
+    vdn8 char(16),                        { modified for R18 }
+    vdn9 char(16),                        { modified for R18 }
+    asaiuui char(192),
+    interuptdel smallint,      
+    agentsurplus smallint,     
+    agentskilllevel smallint,  
+    prefskilllevel smallint,    
+    icrresent smallint,          
+    icrpullreason smallint,
+    tenant_num integer                    { added in R18 }
+  ) in "/cms/cmstables/c_ech";
+revoke all on "root".c_ech from "public";
+create index "root".ech_ind on "root".c_ech (acd,segstart);
+grant select on "root".c_ech to "public" as "root";
+grant update on "root".c_ech to "public" as "root";
+grant insert on "root".c_ech to "public" as "root";
+grant delete on "root".c_ech to "public" as "root";
+grant index on "root".c_ech to "public" as "root";
