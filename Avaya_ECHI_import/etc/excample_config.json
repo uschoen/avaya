@@ -41,16 +41,24 @@
                 "encoding": "utf8",
                 "filename": "absolute path (escape\\)warning.log",
                 "formatter": "simple",
-                "level": "DEBUG",
+                "level": "WARNING",
+                "maxBytes": 1200000,
+                "mode": "a"
+            },
+            "info_handler": {
+                "backupCount": 5,
+                "class": "logging.handlers.RotatingFileHandler",
+                "encoding": "utf8",
+                "filename": "absolute path (escape\\)info.log",
+                "formatter": "simple",
+                "level": "INFO",
                 "maxBytes": 1200000,
                 "mode": "a"
             }
         },
         "root": {
             "handlers": [
-                "warning_handler",
-                "console"
-            ],
+                "warning_handler","info_handler","console"],
             "level": "DEBUG"
         },
         "version": 1
