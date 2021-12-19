@@ -4,10 +4,13 @@
 "data":{ 
 	"sourceFilePath":"absolute path with \ at the end(escape\\)",		
 	"archiveFilePath":"absolute path with \\archive\\ at the end (escape\\)",
-	"archiveDay":"30",
-	"separator":","
+	"archiveInterval": "1",
+    "holdArchiveFiles": "2",
+    "lastarchive": "2021,12,19",
+    "separator": ",","
 	},
 "db":{
+		"maxEntry": 100,
 		"table":"echi",
 		"server":{  
 			"database": "unkown", 
