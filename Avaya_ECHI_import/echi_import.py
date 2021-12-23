@@ -20,7 +20,6 @@ import os
 import json
 import sys
 import hashlib
-from echi_helper import defaultEXC
 from mysql_db import mysql_db
 import shutil
 import zipfile
@@ -28,7 +27,7 @@ import datetime
 
 
 #    constants
-__version__='1.0'
+__version__='1.1'
 __author__ = 'ullrich schoen'
 
 #    PATH: the absolute path of the script
@@ -368,6 +367,14 @@ def createNewTable(dbcon,table,echiFields):
     except:
         raise defaultEXC("unkown error in createNewTable",True)
 
+class defaultEXC(Exception):
+    '''
+        Exception class
+    '''
+    def __init__(self, msg="unkown error occured",tracback=False):
+        super(defaultEXC, self).__init__(msg)
+        self.msg = msg
+        LOG.critical(msg,exc_info=tracback)
 
 if __name__ == '__main__':
     main()

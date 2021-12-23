@@ -20,10 +20,10 @@
 
 import mysql.connector
 import logging
-from echi_helper import defaultEXC
+from echi_import import defaultEXC
 
 #    constants
-__version__='1.0'
+__version__='1.1'
 __author__ = 'ullrich schoen'
 
 #    Logging
