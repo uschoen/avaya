@@ -32,31 +32,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### Windows
 Python Version 3.7.9
 
+#### For mysql database connection:
 mysql-connector-python-8.0.27-windows-x86-64bit.msi 
 
 mysql db (maria db 5 or 10)
 
+#### For Microsoft database connection  (from ECHIi Version 1.5)
+
+
 ### Linux
 Python Version 3.7
+
+#### MYSL database connection:
 
 mysqlclient-2.1.0 
 
 mysql db (maria db 5 or 10)
+
+
+#### Microsoft database connection  (from ECHIi Version 1.5)
+
+Microsoft SQL Server (test with 2019)
 
 ## Installing 
 ### Windows
 install python for windows with Version 3.7.9. 
 
 download Link: <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>
-
+#### MYSQL Database
 install Mysql Connector for Python with Version 8.0.27
 
 Download Link:<https://dev.mysql.com/downloads/file/?id=508346>
 
+#### Microsoft MS SQL Server (from ECHIi Version 1.5)
+
+pymssql connector:
+<https://pypi.org/project/pymssql/2.1.1/#files>
+
+Microsoft MS SQL Server:
+<https://www.microsoft.com/de-de/evalcenter/evaluate-sql-server-2019?filetype=EXE>
+
 ### Linux
 use sudo apt-get install python3 to install python 3.x
 
+#### MYSQL database
 use sudo pip3 install mysql to install the mysql connector.
+
+#### Microsoft MS SQL database
+use sudo  pip3 install pymssql to install the Microsoft MS SQL connector.
 
 ## Setup
 Install the Avaya ECHi Script in any directory. Copy the file. Importent: change
