@@ -3,7 +3,8 @@
 The script if locking in a source directory for new echi files. The Script will be importing all Scripts in this directory. Alle data will by import to a mysql table. The files where move to the archive directory. Alle files in the directory are zip and copy to the archive zip dir. Zip files where delete after a time. For alle function you can use the configuration file to define the values.
 The best way is use a cron Job to execute the script every hour.
 ## Changelog
-1.0 First Version
+1.0 Init Version
+20.12.2021
 
 ## License
 Copyright 2021 by Ullrich Schoen
@@ -85,22 +86,23 @@ under custommer echi formats for more information.
 	
 "sourceFilePath": absolute path to the echi file for import
 
-"archiveFilePath": absolute path to the achive path
+"archiveFilePath": absolute path to the archive path
 
 "archiveInterval": "1" intervall (days) to zip the archive echi files (stored in ../archiveFilePath/zip)
 
 "holdArchiveFiles": "2" number for hold zip files in ../archiveFilePath/zip
 
-"lastarchive": "2020,12,19" change it for the first runn to today -1. The script save the last arcihve date here
+"lastarchive": "2020,12,19" change it for the first rnn to today -1. The script save the last archive date here
 
-"separator": "|" separator betwen the data, see the format discription 
+"separator": "|" separator between the data, see the format description 
     
-!!!Importent: in json file you have to ecape special characters !!!
+!!!Important: in json file you have to escape special characters !!!
 
 #### db	section
 "db":{...}
 
-"maxEntry": 1000000 mx entry for entrys in db database. If more entrys in the table, the script copy the table to backup and add new empty table.
+"maxEntry": 1000000 mx entry for entry’s in db database. If more entry’s in the table, the script copy the table to backup and add new empty table.
+
 
 "table":"echi",
 
@@ -113,7 +115,7 @@ server:{...}
 
 "host": "127.0.0.1" Database host/ip
 
-"user": "unkown" Dtatabse user
+"user": "unkown" Database user
  
 "password": "password" Database password
  
@@ -123,10 +125,11 @@ server:{...}
            
 
 #### logging section
-see for discription in the documationen for the pthon modul logging/ configuration with dictory and json file
+see for description in the documentation for the python modul logging/ configuration with dictionary and json file.
 
 
-"logging":{
+	"logging":{...}
+
         "disable_existing_loggers": false,
         "formatters": {
             "simple": {
@@ -167,6 +170,67 @@ see for discription in the documationen for the pthon modul logging/ configurati
             "level": "DEBUG"
         },
         "version": 1
-    }
-}
+    }   }
+## custommer echi format
+In the folder echi_format you can find the import format for your cms version. You can add
+user defined formats. Do not use format files from this script, because after the next update
+your change will be overwritten.
+
+the script breaks the string down into small parts using the separator (definition in the config file)
+, which are numbered from 0 to x.
+
+###format of the fields
+[ { field 0 },{field 1}, {field 2}, {field ...}]
+
+[ 
 	
+	{
+	"source":"file",
+	"name":"CALLID",
+	"type":"int",
+	"length":"10"
+	},
+	{
+	"source":"file",
+	"name":"ACWTIME",
+	"type":"int",
+	"length":"4"
+	},
+	{
+	"source":"file",
+	"name":"ANSHOLDTIME",
+	"type":"int",
+	"length":"4"
+	},
+	{
+	{...}
+]
+
+In this case is the split data from the echi file with the number "0" the CallID field
+and the data field 2 the ANSHOLDTIME, and so on...
+
+Every field need some data description:
+
+"source":"file"      data are from file
+
+"name":"ANSHOLDTIME" the tabel row name to insert
+
+"type":"int"		 data type in the table
+
+"length":"4"		 data lenght in the database table
+
+This field are imported. The script maps the data an build from this information the
+new database table in the database.	
+
+IMPORTEND!:
+At the end of the file alle format description need this section, for the md5 Hash.
+
+{
+	"source":"cust",
+	
+ 	"name":"md5",
+ 	
+ 	"type":"varchar",
+ 
+ 	"length":"32"
+}
