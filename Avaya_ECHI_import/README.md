@@ -1,9 +1,9 @@
 # ECHI Avaya import script
-##Python script to import the Avaya ECHI data to a mysql Database
+## Python script to import the Avaya ECHI data to a mysql Database
 The script if locking in a source directory for new echi files. The Script will be importing all Scripts in this directory. Alle data will by import to a mysql table. The files where move to the archive directory. Alle files in the directory are zip and copy to the archive zip dir. Zip files where delete after a time. For alle function you can use the configuration file to define the values.
 The best way is use a cron Job to execute the script every hour.
 
-##License
+## License
 Copyright 2021 by Ullrich Schoen
 
 his program is free software: you can redistribute it and/or modify
