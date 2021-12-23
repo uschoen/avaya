@@ -20,21 +20,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-###Requierment (Windows)
+### Requierment (Windows)
 Python Version 3.7.9
 
 mysql-connector-python-8.0.27-windows-x86-64bit.msi 
 
 mysql db (maria db 5 or 10)
 
-###Requierment (linux)
+### Requierment (linux)
 Python Version 3.7
 
 mysqlclient-2.1.0 
 
 mysql db (maria db 5 or 10)
 
-###Installing (windows)
+### Installing (windows)
 install python for windows with Version 3.7.9. 
 
 download Link: <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>
@@ -43,7 +43,7 @@ install Mysql Connector for Python with Version 8.0.27
 
 Download Link:<https://dev.mysql.com/downloads/file/?id=508346>
 
-###Installing (linux)
+### Installing (linux)
 use sudo apt-get install python3 to install python 3.x
 
 use sudo pip3 install mysql to install the mysql connector.
@@ -67,13 +67,13 @@ Directorys:
 ### configuration:
 Copy the excample_config.json in /etc/ to config.json
 
-####cms
+#### cms
 "cms":
 	{"version":"r18.json"} 
 
 use the import definition for your echi format. See in /echi_format for the your need version
 
-####data	
+#### data	
 "data":
 { 
 	"sourceFilePath":"absolute path with \ at the end(escape\\)",	
@@ -86,7 +86,7 @@ use the import definition for your echi format. See in /echi_format for the your
     "lastarchive": "2021,12,19",
     "separator": ","
 }
-####db	
+#### db	
 "db":
 {
 		"maxEntry": 100,
@@ -99,7 +99,7 @@ use the import definition for your echi format. See in /echi_format for the your
             "user": "unkown",
             "raise_on_warnings": true
            }}
-####logging
+#### logging
 "logging":{
         "disable_existing_loggers": false,
         "formatters": {
