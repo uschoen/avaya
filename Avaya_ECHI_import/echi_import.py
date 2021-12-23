@@ -20,7 +20,6 @@ import os
 import json
 import sys
 import hashlib
-from mysql_db import mysql_db
 import shutil
 import zipfile
 import datetime
@@ -52,6 +51,12 @@ def main():
         #    Logging
         logging.config.dictConfig(cfgFile["logging"])  
         
+        
+        #    loading Database Class
+        if cfgFile['db']['databaseType']:
+            from mysql_db import mysql_db as databaseOBJ
+        else:
+            raise defaultEXC("unknown database Typ %s"%(cfgFile['db']['databaseType']))
         '''
             load cms ech converter
         
@@ -95,7 +100,7 @@ def main():
         if (len(echiFiles)>0):
             
             #    create db connection
-            database=mysql_db(cfgFile['db']['server'])
+            database=databaseOBJ(cfgFile['db']['server'])
             
             
             # check if tabel exists
