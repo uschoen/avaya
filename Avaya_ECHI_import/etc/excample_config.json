@@ -5,12 +5,12 @@
 	"sourceFilePath":"absolute path with \ at the end(escape\\)",		
 	"archiveFilePath":"absolute path with \\archive\\ at the end (escape\\)",
 	"archiveInterval": "1",
-    "holdArchiveFiles": "2",
-    "lastarchive": "2021,12,19",
-    "separator": ",","
+    "holdArchiveFiles": "10",
+    "lastarchive": "2020,12,19",
+    "separator": "|"
 	},
 "db":{
-		"maxEntry": 100,
+		"maxEntry": 5000000,
 		"table":"echi",
 		"server":{  
 			"database": "unkown", 
