@@ -2,7 +2,7 @@
 "cms":{
 	"version":"r18.json"},
 "data":{ 
-	"sourceFilePath":"absolute path with \ at the end(escape\\)",		
+	"sourceFilePath":"absolute path with \\at the end(escape\\)",		
 	"archiveFilePath":"absolute path with \\archive\\ at the end (escape\\)",
 	"archiveInterval": "1",
     "holdArchiveFiles": "10",

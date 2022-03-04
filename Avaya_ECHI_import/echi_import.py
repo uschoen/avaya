@@ -146,8 +146,10 @@ def main():
                         
                         sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
                         LOG.debug("build sql string: %s"%(sql))
-                        database.sqlExecute(sql)
-                    
+                        try:
+                            database.sqlExecute(sql)
+                        except:
+                            LOG.critical("can't do sqlExecute")
                     
                     fileData.close() 
                 except (IndexError) as e:
