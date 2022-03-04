@@ -142,7 +142,7 @@ def main():
                             else:
                                 # data fields
                                 tableString+=("`%s`"%(echiDefinition['name']))
-                                valueString+=("'%s'"%(echiData[echIFileIndex]))
+                                valueString+=("'%s'"%(formatFieldLength(echiData[echIFileIndex],echiDefinition['length'])))
                         
                         sql=("INSERT INTO %s (%s) VALUES (%s);"%(cfgFile['db']["table"],tableString,valueString))
                         LOG.debug("build sql string: %s"%(sql))
@@ -193,6 +193,25 @@ def main():
         LOG.critical("%s"%(e),exc_info=True)
     except: 
         LOG.critical("unkown error ",exc_info=True)
+
+def formatFieldLength(field,length):
+    '''
+        check if the value field grater as the legth field of the
+        database definition. If the Field grader, the field value will 
+        be cut
+        
+        @var: field: field to check as string
+        @var: length: length of the field var
+        
+        return: string (field value)
+    '''
+    try:
+        if (len(field))>length:
+            field="%s..."%(field[0:(length-3)])
+        return field
+    except:
+        raise defaultEXC("unkown error in formatFieldLength",True)
+        
 
 def checkOldArchiveFiles(archivePath,archiveToStore):
     '''
