@@ -495,7 +495,7 @@
  	"source":"file",
  	"name":"ASAI_UUI",
  	"type":"varchar",
- 	"length":"97"
+ 	"length":"100"
  	},
 {
  	"source":"file",
