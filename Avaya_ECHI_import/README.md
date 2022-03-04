@@ -4,11 +4,28 @@ The script if locking in a source directory for new echi files. The Script will 
 The best way is use a cron Job to execute the script every hour.
 ## Changelog
 
-1.1 Code obtimize
+###1.2 Bug Fix / new Funktion
+
+04.03.2022
+
+Bug fix for Database rotation:
+
+if the Dtabase have more then x (Config:"maxEntry":) entry, the tabel copy to 
+NAME_old, and add a new tabel with zero entrys
+
+Bug Fix ASAI_UUI field:
+
+The ASAI_UUI Field was set to 99, but it can be have uo to 192. 
+
+Cut to long data:
+
+Have some datafield mor date as defined, it will be cut
+
+###1.1 Code obtimize
 
 23.12.2021 remove echi_helper.py. move defaultEXC to ech_import.py
 
-1.0 Init Version
+###1.0 Init Version
 
 20.12.2021
 
