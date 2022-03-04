@@ -171,15 +171,15 @@ def main():
             
             sql="SELECT COUNT(*) FROM `%s`"%(cfgFile['db']['table'])
             numberOfEntrys=database.sqlSelect(sql)[0][0]
+            LOG.info("found %s entry in %s , max entry: %s"%(numberOfEntrys,cfgFile['db']['table'],cfgFile['db']['maxEntry']))
             if numberOfEntrys>cfgFile['db']['maxEntry']:
-                LOG.info("found %s entry in %s"%(numberOfEntrys,cfgFile['db']['table']))
                 
                 #    delete old archive database
                 echiArchive="%s_oldEntry"%(cfgFile['db']['table'])
                 if database.checkTableExists(echiArchive):
                     sql="DROP TABLE `%s`"%(echiArchive)
                     database.sqlExecute(sql)
-                sql="RENAME TABLE `%s` TO `echi_db`.`%s`;"%(cfgFile['db']['table'],echiArchive)
+                sql="RENAME TABLE `%s` TO `%s`;"%(cfgFile['db']['table'],echiArchive)
                 database.sqlExecute(sql) 
                 createNewTable(database,cfgFile["db"]["table"],echiCFG)
             
