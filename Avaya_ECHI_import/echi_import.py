@@ -26,7 +26,7 @@ import datetime
 
 
 #    constants
-__version__='1.1'
+__version__='1.2'
 __author__ = 'ullrich schoen'
 
 #    PATH: the absolute path of the script
