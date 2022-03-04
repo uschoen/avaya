@@ -206,8 +206,10 @@ def formatFieldLength(field,length):
         return: string (field value)
     '''
     try:
+        length=int(length)
         if (len(field))>length:
-            field="%s..."%(field[0:(length-3)])
+            LOG.warning("cut data field %s"%(field))
+            field="%s"%(field[0:(length)])
         return field
     except:
         raise defaultEXC("unkown error in formatFieldLength",True)
